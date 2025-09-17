@@ -31,6 +31,18 @@ class Genre(models.Model):
                 violation_error_message = "Genre already exists (case insensitive match)"
             ),
         ]
+class Language(models.Model):
+    """Model representing a language (e.g. English, French, Japanese, Farsi)."""
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Enter the book's natural language (e.g. English, French, Japanese, Farsi)"
+    )
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.name
+
 class Book(models.Model):
     """Model representing a book (but not a specific copy of a book)."""
     title = models.CharField(max_length=200)
@@ -57,6 +69,11 @@ class Book(models.Model):
     def get_absolute_url(self):
         """Returns the URL to access a detail record for this book."""
         return reverse('book-detail', args=[str(self.id)])
+    
+    def display_genre(self):
+        """Create a string for the Genre. This is required to display genre in Admin."""
+        return ', '.join(genre.name for genre in self.genre.all()[:3])
+    display_genre.short_description = 'Genre'
     
 import uuid # Required for unique book instances
 
